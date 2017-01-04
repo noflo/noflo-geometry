@@ -33,7 +33,7 @@ exports.getComponent = ->
     
     sites = c.points
     if c.bbox?
-      bbox = 
+      bbox =
         xl: c.bbox.point.x
         xr: c.bbox.width
         yt: c.bbox.point.y

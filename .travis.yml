@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+- '4.6'
+before_script:
+- npm install -g grunt-cli
+deploy:
+  provider: npm
+  email: henri.bergius@iki.fi
+  api_key:
+    secure: ByvdMbpcIeCFk6iGaPrTC/2E+YZ5+tEeOsEhE0dJvV5H/YzuED1+JJjaCjjZv52o15i+wj6F12nGs85ZQCP+KppB1FeCTX1WrjyiKMQNlv6Vq8n/uQKIVtC/gX9A+QNzKsqnsWBIe4eATwXUhWLwJQZTbqHMH3CTUOYhmGsFe9g=
+  on:
+    tags: true
+    repo: noflo/noflo-geometry
