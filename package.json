@@ -9,14 +9,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/automata/noflo-geometry.git"
+    "url": "git://github.com/noflo/noflo-geometry.git"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "undefined/blob/master/LICENSE-MIT"
-    }
-  ],
+  "license": "MIT",
   "scripts": {
     "test": "grunt test"
   },
@@ -37,6 +32,7 @@
     "grunt-noflo-browser": "^1.0.1"
   },
   "keywords": [
+    "noflo",
     "geometry",
     "computational-geometry",
     "delaunay",
