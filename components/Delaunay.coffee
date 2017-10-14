@@ -5,25 +5,20 @@ exports.getComponent = ->
   c = new noflo.Component
   c.icon = 'toggle-up'
   c.description = 'Calculates Delaunay Triangulation for given points'
-  
-  c.points = null
-
   c.inPorts.add 'points',
     datatype: 'array'
-    process: (event, data) ->
-      return unless event is 'data'
-      c.points = data
-      c.compute()
-
   c.outPorts.add 'paths',
     datatype: 'array'
+  c.outPorts.add 'error',
+    datatype: 'object'
+  c.process (input, output) ->
+    return unless input.hasData 'points'
+    points = input.getData 'points'
+    unless points.length > 2
+      output.done new Error 'points must contain more than 2 elements'
+      return
 
-  c.compute = ->
-    return unless c.outPorts.paths.isAttached()
-    return unless c.points? and c.points.length > 2
-
-    vertices = ([point.x, point.y] for point in c.points)
-    console.log c.points, vertices
+    vertices = ([point.x, point.y] for point in points)
     ids = Delaunay.triangulate vertices
 
     v = (vertices[i] for i in ids)
@@ -35,6 +30,5 @@ exports.getComponent = ->
         items: ({'type': 'point', 'x': v[i+j][0], 'y': v[i+j][1]} for j in [0...3])
       paths.push path
 
-    c.outPorts.paths.send paths
-
-  c
+    output.sendDone
+      paths: paths

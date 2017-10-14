@@ -5,41 +5,35 @@ exports.getComponent = ->
   c = new noflo.Component
   c.icon = 'location-arrow'
   c.description = 'Calculates Voronoi Diagram for given points'
-  
-  c.bbox = null
-  c.points = null
-
   c.inPorts.add 'points',
     datatype: 'array'
-    process: (event, data) ->
-      return unless event is 'data'
-      c.points = data
-      c.compute()
-
   c.inPorts.add 'bbox',
     datatype: 'object'
     description: 'bounding box as a rectangle (default: 200x200)'
-    process: (event, data) ->
-      return unless event is 'data'
-      c.bbox = data
-      c.compute()
-
+    control: true
   c.outPorts.add 'paths',
     datatype: 'array'
-
-  c.compute = ->
-    return unless c.outPorts.paths.isAttached()
-    return unless c.points? and c.points.length > 2
-    
-    sites = c.points
-    if c.bbox?
+  c.outPorts.add 'error',
+    datatype: 'object'
+  c.process (input, output) ->
+    return unless input.hasData 'points'
+    sites = input.getData 'points'
+    unless sites.length > 2
+      output.done new Error 'points must contain more than 2 elements'
+      return
+    if input.hasData 'bbox'
+      bboxData = input.getData 'bbox'
       bbox =
-        xl: c.bbox.point.x
-        xr: c.bbox.width
-        yt: c.bbox.point.y
-        yb: c.bbox.height
+        xl: bboxData.point.x
+        xr: bboxData.width
+        yt: bboxData.point.y
+        yb: bboxData.height
     else
-      bbox = {xl: 0, xr: 200, yt: 0, yb: 200}
+      bbox =
+        xl: 0
+        xr: 200
+        yt: 0
+        yb: 200
 
     voronoi = new Voronoi()
     diagram = voronoi.compute(sites, bbox)
@@ -58,6 +52,5 @@ exports.getComponent = ->
           type: 'path'
           items: points
 
-    c.outPorts.paths.send paths
-
-  c
+    output.sendDone
+      paths: paths
